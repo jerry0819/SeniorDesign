@@ -62,7 +62,7 @@ public class PictureController {
 
 
 
-    private void callCloudVision(final Bitmap bitmap, final Feature feature) {
+    public void callCloudVision(final Bitmap bitmap, final Feature feature) {
 
         final List<Feature> featureList = new ArrayList<>();
         featureList.add(feature);

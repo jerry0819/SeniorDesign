@@ -17,7 +17,6 @@ import com.google.api.services.vision.v1.model.AnnotateImageRequest;
 import com.google.api.services.vision.v1.model.AnnotateImageResponse;
 import com.google.api.services.vision.v1.model.BatchAnnotateImagesRequest;
 import com.google.api.services.vision.v1.model.BatchAnnotateImagesResponse;
-import com.google.api.services.vision.v1.model.EntityAnnotation;
 import com.google.api.services.vision.v1.model.Feature;
 import com.google.api.services.vision.v1.model.Image;
 
@@ -42,18 +41,23 @@ public class PictureController {
     //private final SharedPreferenceHelper mSharedPreferenceHelper;
 
     private static final String CLOUD_VISION_API_KEY = "AIzaSyB6E94oGWkqs4xouI2Jfr_BtJ2sngZthwg";
+    private ArrayList<String> measurements;
+    public ArrayList<ArrayList<String>> measurementsMatrix;
     private Context mContext;
     private static final String TAG = "HttpURLGET";
     private List<String> list = new ArrayList<>();
     private List<String> foods =  new ArrayList<>();
     private List<String> data;
     private List<String> URIlist = new ArrayList<>();
-
+    public ArrayList<ArrayList<String>> measurementsURIMatrix;
+    private ArrayList<String> measurementsURI;
     PictureActivity pa;
     public PictureController(Context context, Bitmap bitmap, Feature feature,PictureActivity pa) {
         this.pa = pa;
+        measurementsMatrix=new ArrayList<>();
+        measurementsURIMatrix=new ArrayList<>();
         callCloudVision(bitmap, feature);
-        new MyAsyncTask().execute();
+
     }
 
 
@@ -137,7 +141,8 @@ public class PictureController {
             }
         }
 
-
+        listFoods(data);
+        //new MyAsyncTask().execute();
         //message = formatAnnotation(entityAnnotations);
         return message;
     }
@@ -152,8 +157,10 @@ public class PictureController {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-
+                Log.e(TAG, "LET US COUNT" );
                 try {
+                    measurements = new ArrayList<>();
+                    measurementsURI = new ArrayList<>();
                     String jsonData = response.body().string();
                     JSONObject returnJSON = new JSONObject(jsonData);
                     JSONArray hints = (JSONArray) returnJSON.get("hints");
@@ -162,23 +169,27 @@ public class PictureController {
                     JSONObject morefood = food1.getJSONObject("food");
                     String food = morefood.getString("label");
                     String foodURI = morefood.getString("uri");
-                    if(morefood.getString("brand")!=null)
-                    {
-                        if(foodName.toLowerCase().equals(morefood.getString("brand").toLowerCase()))
-                        {
-                            Log.e(TAG, "FOUND ONE MY DUDE" + foodName );
-                        }
+                    foods.add(returnJSON.getString("text"));
+                    JSONArray measures = food1.getJSONArray("measures");
+                    for (int i = 0; i < measures.length(); i++) {
+                        JSONObject jsonMeasures = measures.getJSONObject(i);
+                        measurements.add(jsonMeasures.getString("label"));
+                        measurementsURI.add(jsonMeasures.getString("uri"));
                     }
+                    measurementsMatrix.add(measurements);
+                    measurementsURIMatrix.add(measurementsURI);
+                    //TODO: get brand names working, currently breaks out of try catch if no brand
+                    //if(morefood.getString("brand")!=null)
+                    //{
+                        //if(foodName.toLowerCase().equals(morefood.getString("brand").toLowerCase()))
+                        //{
+                         //   Log.e(TAG, "FOUND ONE MY DUDE" + foodName );
+                        //}
+                    //}
                     URIlist.add(foodURI);
                     list.add(food);
-                    food1 = hints.getJSONObject(1);
-                    morefood = food1.getJSONObject("food");
-                    food = morefood.getString("label");
-                    foodURI = morefood.getString("uri");
-                    URIlist.add(foodURI);
-                    list.add(food);
-                    Log.e(TAG, "listFoods: " + list.size() );
-
+                    Log.e(TAG, "FOOD NAME: " + foodName );
+                    pa.display(foods, pa);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -186,7 +197,7 @@ public class PictureController {
                 }
             }
         }, s);
-        Log.e(TAG, "listFoods: " + list.size() );
+        //pa.display(list, pa);
         return list;
     }
 
@@ -215,20 +226,7 @@ public class PictureController {
         }
     }
 
-    private class MyAsyncTask extends AsyncTask<Void, Void, String>
-    {
-        @Override
-        protected String doInBackground(Void... voids) {
-            listFoods(data);
-            return null;
-        }
 
-        @Override
-        protected void onPostExecute(String result)
-        {
-            pa.display(list, pa);
-        }
-    }
     public String getURI(int position){
         return URIlist.get(position);
     }

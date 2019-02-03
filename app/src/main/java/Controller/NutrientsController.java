@@ -22,6 +22,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import Models.Food;
@@ -45,8 +46,12 @@ public class NutrientsController {
     private StitchAppClient client;
     private final RemoteMongoClient mongoClient;
     private final RemoteMongoCollection<Document> coll;
+    private List<String> measurements;
+    private List<String> measurementsURI;
     private Food f;
-    public NutrientsController(Context context,NutrientsActivity sna) {
+    public NutrientsController(Context context,NutrientsActivity sna, List<String> measurements, List<String> measurementsURI) {
+        this.measurements = measurements;
+        this.measurementsURI = measurementsURI;
         mContext = context;
         nuts = new ArrayList<>();
         mNutrientsActivity = sna;
@@ -69,8 +74,8 @@ public class NutrientsController {
         coll = mongoClient.getDatabase("photoFoodDB").getCollection("photoFoodColl");
     }
 
-    public void getNutrients(String URI) throws JSONException {
-        findNutrients(URI, new Callback() {
+    public void getNutrients(String URI, int position) throws JSONException {
+        findNutrients(URI,position, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
@@ -80,6 +85,8 @@ public class NutrientsController {
             public void onResponse(Call call, Response response) throws IOException {
                 String jsonData = response.body().string();
                 f = new Food();
+                Calendar cal = Calendar. getInstance();
+                f.date = cal.getTime();
                 JSONObject nutrients = null;
                 JSONObject j = null;
                 Log.e(TAG, "onNotResponse: " + jsonData);
@@ -248,9 +255,10 @@ public class NutrientsController {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                nuts.add("calories per oz: " + f.calories);
-                nuts.add("carbs per oz: " + f.carbs);
-                nuts.add("sugars per oz: " + f.sugars);
+
+                nuts.add("calories per: " + f.calories);
+                nuts.add("carbs per: " + f.carbs);
+                nuts.add("sugars per: " + f.sugars);
                 mNutrientsActivity.showNutrients(nuts, mNutrientsActivity, f);
                 Log.e(TAG, "onResponse: " + f.calories );
             }
@@ -258,12 +266,12 @@ public class NutrientsController {
     }
 
 
-    public void findNutrients(String foodURI, Callback callback) throws JSONException {
+    public void findNutrients(String foodURI,int position, Callback callback) throws JSONException {
         OkHttpClient client = new OkHttpClient.Builder()
                 .build();
         JSONObject obj = new JSONObject()
                 .put("quantity", 1)
-                .put("measureURI","http://www.edamam.com/ontologies/edamam.owl#Measure_ounce")
+                .put("measureURI",measurementsURI.get(position))
                 .put("foodURI", foodURI);
         JSONArray ja = new JSONArray()
                 .put(obj);
@@ -292,6 +300,7 @@ public class NutrientsController {
         Document updateDoc = new Document().append("$push",
                 new Document().append("nutrientsInfoList", new Document()
                         .append("name", f.name)
+                        .append("date", f.date)
                         .append("calories", f.calories)
                         .append("added_sugars", f.added_sugars)
                         .append("calcium", f.calcium)

@@ -1,7 +1,10 @@
 package Models;
 
+import java.util.Date;
+
 public class Food {
     public String name;
+    public Date date;
     public String URI;
     public String measure;
     public double calories;
@@ -75,8 +78,9 @@ public class Food {
         this.vitamin_K = 0;
     }
 
-    public Food( String name, String URI, String measure, double calories, double fat, double saturated_fat, double trans_fat, double monounsaturated_fat, double polyunsaturated_fat, double carbs, double fiber, double sugars, double added_sugars, double protein, double cholesterol, double sodium, double calcium, double magnesium, double potassium, double iron, double zinc, double phosphorus, double vitamin_A, double vitamin_C, double thiamin, double riboflavin, double niacin, double vitamin_B6, double folate_equivalent, double folate, double folic_acid, double vitamin_B12, double vitamin_D, double vitamin_E, double vitamin_K){
+    public Food( String name, Date date, String URI, String measure, double calories, double fat, double saturated_fat, double trans_fat, double monounsaturated_fat, double polyunsaturated_fat, double carbs, double fiber, double sugars, double added_sugars, double protein, double cholesterol, double sodium, double calcium, double magnesium, double potassium, double iron, double zinc, double phosphorus, double vitamin_A, double vitamin_C, double thiamin, double riboflavin, double niacin, double vitamin_B6, double folate_equivalent, double folate, double folic_acid, double vitamin_B12, double vitamin_D, double vitamin_E, double vitamin_K){
         this.name = name;
+        this.date = date;
         this.URI = URI;
         this.measure = measure;
         this.calories = calories;

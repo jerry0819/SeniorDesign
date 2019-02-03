@@ -41,10 +41,12 @@ public class LoginActivity extends AppCompatActivity{
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         //updateUI(account);
         mSharedPreferenceHelper = new SharedPreferenceHelper(this);
-        if(mSharedPreferenceHelper.getCode()!="code"){
+        Log.e("CODE: ", "onCreate: " + mSharedPreferenceHelper.getCode());
+        if(mSharedPreferenceHelper.getCode()!=""){
             gotoCameraScreen();
         }
         SignInButton signInButton = findViewById(R.id.sign_in_button);
+
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override

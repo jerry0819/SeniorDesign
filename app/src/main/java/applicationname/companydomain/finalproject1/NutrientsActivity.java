@@ -4,8 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -16,15 +19,20 @@ import java.util.List;
 import Controller.NutrientsController;
 import Models.Food;
 
-public class NutrientsActivity extends AppCompatActivity {
+public class NutrientsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     String TAG = "hey";
     private Food f;
     private ArrayAdapter<String> adapter;
     private ListView nutrientsListView;
     private NutrientsController mNutrientsController;
     private List<String> nutrientsList;
+    private Spinner spinnerMeasurements;
+    private List<String> measurements;
+    private List<String> measurementsURI;
+    private String URI;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_nutrients);
         nutrientsList = new ArrayList<>();
@@ -32,13 +40,20 @@ public class NutrientsActivity extends AppCompatActivity {
         nutrientsListView = (ListView) findViewById(R.id.nutrientsList);
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, nutrientsList);
         nutrientsListView.setAdapter(adapter);
-        String URI = (String) intentExtras.get("URI");
-        mNutrientsController = new NutrientsController(this, this);
+        URI = (String) intentExtras.get("URI");
+        measurements = intentExtras.getStringArrayList("measurements");
+        measurementsURI = intentExtras.getStringArrayList("measurementsURI");
+        mNutrientsController = new NutrientsController(this, this, measurements, measurementsURI);
         try {
-            mNutrientsController.getNutrients(URI);
+            mNutrientsController.getNutrients(URI,0);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        spinnerMeasurements = findViewById(R.id.spinnerMeasurements);
+        spinnerMeasurements.setOnItemSelectedListener(this);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, measurements);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerMeasurements.setAdapter(dataAdapter);
     }
 
 
@@ -47,7 +62,6 @@ public class NutrientsActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // Stuff that updates the UI
-                f = food;
                 adapter = new ArrayAdapter<String>(sna, android.R.layout.simple_expandable_list_item_1, s);
                 nutrientsListView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
@@ -72,6 +86,22 @@ public class NutrientsActivity extends AppCompatActivity {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        try {
+
+            mNutrientsController.getNutrients(URI,position);
+            adapter.clear();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }
 

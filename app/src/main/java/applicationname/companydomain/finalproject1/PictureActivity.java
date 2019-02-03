@@ -60,7 +60,7 @@ public class PictureActivity extends AppCompatActivity implements NavigationView
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String URI = mPictureController.getURI(position);
-                nextScreen(URI);
+                nextScreen(URI, mPictureController.measurementsMatrix.get(position), mPictureController.measurementsURIMatrix.get(position));
             }
         });
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -90,15 +90,33 @@ public class PictureActivity extends AppCompatActivity implements NavigationView
         });
     }
 
-    public void nextScreen(String URI) {
+    public void nextScreen(String URI, ArrayList<String> measurements,  ArrayList<String> measurementsURI) {
         Intent loadNutrientScreen = new Intent(this, NutrientsActivity.class);
         loadNutrientScreen.putExtra("URI", URI);
+        loadNutrientScreen.putExtra("measurements", measurements);
+        loadNutrientScreen.putExtra("measurementsURI", measurementsURI);
         startActivity(loadNutrientScreen);
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        return false;
+    public boolean onNavigationItemSelected(@NonNull MenuItem item){
+        int id = item.getItemId();
+
+        if (id == R.id.nav_upload) {
+        // Handle the camera action
+    } else if (id == R.id.nav_search) {
+        Intent searchScreen = new Intent(this, SearchFoodActivity.class);
+        startActivity(searchScreen);
+    } else if (id == R.id.nav_settings) {
+
+    } else if(id == R.id.mybutton){
+        Intent searchScreen = new Intent(this, SearchFoodActivity.class);
+        startActivity(searchScreen);
+    }
+
+    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     @Override
@@ -123,8 +141,13 @@ public class PictureActivity extends AppCompatActivity implements NavigationView
         if (id == R.id.nav_upload) {
             // Handle the camera action
         } else if (id == R.id.nav_search) {
-
+            Intent searchScreen = new Intent(this, SearchFoodActivity.class);
+            startActivity(searchScreen);
         } else if (id == R.id.nav_settings) {
+
+        } else if(id == R.id.mybutton){
+            Intent searchScreen = new Intent(this, SearchFoodActivity.class);
+            startActivity(searchScreen);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

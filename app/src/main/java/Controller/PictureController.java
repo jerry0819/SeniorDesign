@@ -133,17 +133,18 @@ public class PictureController {
         com.google.api.services.vision.v1.model.WebDetection wb = imageResponses.getWebDetection();
 
         List<com.google.api.services.vision.v1.model.WebEntity> wbl = wb.getWebEntities();
-        for(int i =0; i<wbl.size(); i++)
-        {
-            if(wbl.get(i).getScore() >=.5) {
-                data.add(wbl.get(i).getDescription());
-                Log.e("YOOOOOOOOOOOOOO", "convertResponseToString: " + wbl.get(i).getDescription() + " " + wbl.get(i).getScore());
+        if(wbl!=null) {
+            for (int i = 0; i < wbl.size(); i++) {
+                if (wbl.get(i).getScore() >= .5) {
+                    data.add(wbl.get(i).getDescription());
+                    Log.e("YOOOOOOOOOOOOOO", "convertResponseToString: " + wbl.get(i).getDescription() + " " + wbl.get(i).getScore());
+                }
             }
-        }
 
-        listFoods(data);
-        //new MyAsyncTask().execute();
-        //message = formatAnnotation(entityAnnotations);
+            listFoods(data);
+            //new MyAsyncTask().execute();
+            //message = formatAnnotation(entityAnnotations);
+        }
         return message;
     }
 

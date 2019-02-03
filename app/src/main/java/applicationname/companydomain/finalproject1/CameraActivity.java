@@ -9,6 +9,7 @@ import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -220,13 +221,21 @@ public class CameraActivity extends AppCompatActivity implements PictureCallback
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+    public boolean onNavigationItemSelected(@NonNull MenuItem item){
         int id = item.getItemId();
 
+        if (id == R.id.nav_upload) {
+            // Handle the camera action
+        } else if (id == R.id.nav_search) {
+            Intent searchScreen = new Intent(this, SearchFoodActivity.class);
+            startActivity(searchScreen);
+        } else if (id == R.id.nav_settings) {
 
+        } else if(id == R.id.mybutton){
+            Intent searchScreen = new Intent(this, SearchFoodActivity.class);
+            startActivity(searchScreen);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

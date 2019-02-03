@@ -72,7 +72,34 @@ public class PictureActivity extends AppCompatActivity implements NavigationView
 
         // Tie DrawerLayout events to the ActionBarToggle
         mDrawer.addDrawerListener(drawerToggle);
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.nvView);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                mDrawer.closeDrawers();
+                int itemId = menuItem.getItemId();
+                //Toast.makeText(getApplicationContext(), menuItem.getTitle().toString(),
+                //       Toast.LENGTH_LONG).show();
+                int id = menuItem.getItemId();
+                Log.e("TAG", "onOptionsItemSelected: " + "WE IN THIS HOE????");
+                if (id == R.id.nav_upload) {
+                    // Handle the camera action
+                } else if (id == R.id.nav_search) {
+                    Intent searchScreen = new Intent(PictureActivity.this, SearchFoodActivity.class);
+                    startActivity(searchScreen);
+                } else if (id == R.id.nav_settings) {
+
+                } else if(id == R.id.mybutton){
+                    Intent searchScreen = new Intent(PictureActivity.this, SearchFoodActivity.class);
+                    startActivity(searchScreen);
+                }
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                drawer.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
     }
 
 
@@ -101,18 +128,18 @@ public class PictureActivity extends AppCompatActivity implements NavigationView
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item){
         int id = item.getItemId();
-
+        Log.e("TAG", "onOptionsItemSelected: " + "WE IN THIS HOE????");
         if (id == R.id.nav_upload) {
-        // Handle the camera action
-    } else if (id == R.id.nav_search) {
-        Intent searchScreen = new Intent(this, SearchFoodActivity.class);
-        startActivity(searchScreen);
-    } else if (id == R.id.nav_settings) {
+            // Handle the camera action
+        } else if (id == R.id.nav_search) {
+            Intent searchScreen = new Intent(this, SearchFoodActivity.class);
+            startActivity(searchScreen);
+        } else if (id == R.id.nav_settings) {
 
-    } else if(id == R.id.mybutton){
-        Intent searchScreen = new Intent(this, SearchFoodActivity.class);
-        startActivity(searchScreen);
-    }
+        } else if(id == R.id.mybutton){
+            Intent searchScreen = new Intent(this, SearchFoodActivity.class);
+            startActivity(searchScreen);
+        }
 
     DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

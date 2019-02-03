@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import Controller.SearchFoodController;
@@ -33,7 +34,7 @@ public class SearchFoodActivity extends AppCompatActivity {
         foodListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                nextScreen(mSearchFoodController.getURI(position));
+                nextScreen(mSearchFoodController.getURI(position), mSearchFoodController.measurementsMatrix.get(position), mSearchFoodController.measurementsURIMatrix.get(position));
             }
         });
         searchFoodEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -46,9 +47,11 @@ public class SearchFoodActivity extends AppCompatActivity {
         });
     }
 
-    private void nextScreen(String uri) {
+    private void nextScreen(String uri, ArrayList<String> measurements, ArrayList<String> measurementsURI) {
         Intent loadNutrientScreen = new Intent(this, NutrientsActivity.class);
         loadNutrientScreen.putExtra("URI", uri);
+        loadNutrientScreen.putExtra("measurements", measurements);
+        loadNutrientScreen.putExtra("measurementsURI", measurementsURI);
         startActivity(loadNutrientScreen);
     }
 

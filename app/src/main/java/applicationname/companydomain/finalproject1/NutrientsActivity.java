@@ -2,6 +2,7 @@ package applicationname.companydomain.finalproject1;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,6 +53,10 @@ public class NutrientsActivity extends AppCompatActivity implements AdapterView.
         spinnerMeasurements = findViewById(R.id.spinnerMeasurements);
         spinnerMeasurements.setOnItemSelectedListener(this);
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, measurements);
+        for(int i = 0; i<measurements.size(); i++)
+        {
+            Log.e(TAG, "onCreate: " + measurements.get(i) );
+        }
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMeasurements.setAdapter(dataAdapter);
     }

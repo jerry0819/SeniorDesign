@@ -20,7 +20,7 @@ public class UserFoodInfoActivity extends AppCompatActivity {
         mUserFoodInfoController = new UserFoodInfoController(this, mSharedPreferenceHelper.getCode());
         tv = (TextView) findViewById(R.id.caloriesTextView);
     }
-    public void showCalories(int total){
-        tv.setText("Total: " + total);
+    public void showCalories(int monTotal, int tuesTotal, int wedTotal, int thursTotal, int friTotal, int satTotal, int sunTotal){
+        tv.setText("Total Calories this Monday: " + monTotal + "\n" + "Total Calories this Tuesday: " + tuesTotal + "\n" +"Total Calories this Wednesday: " + wedTotal + "\n" +"Total Calories this Thursday: " + thursTotal + "\n" +"Total Calories this Friday: " + friTotal + "\n" +"Total Calories this Saturday: " + satTotal + "\n" +"Total Calories this Sunday: " + sunTotal + "\n");
     }
 }

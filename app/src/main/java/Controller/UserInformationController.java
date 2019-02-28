@@ -33,48 +33,48 @@ import Models.User;
 import Util.SharedPreferenceHelper;
 
 public class UserInformationController {
-    private Context mContext;
-    private User u;
-    private SharedPreferenceHelper mSharedPreferenceHelper;
-    private GoogleSignInAccount account;
-    private final StitchAppClient client;
-    private final RemoteMongoClient mongoClient;
-    private final RemoteMongoCollection<Document> coll;
+  private Context mContext;
+  private User u;
+  private SharedPreferenceHelper mSharedPreferenceHelper;
+  private GoogleSignInAccount account;
+  private final StitchAppClient client;
+  private final RemoteMongoClient mongoClient;
+  private final RemoteMongoCollection<Document> coll;
 
-    public UserInformationController(Context context) {
-        mContext = context;
+  public UserInformationController(Context context) {
+    mContext = context;
 
-        client = Stitch.getDefaultAppClient();
-        mSharedPreferenceHelper = new SharedPreferenceHelper(context);
-        mongoClient = client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
+    client = Stitch.getDefaultAppClient();
+    mSharedPreferenceHelper = new SharedPreferenceHelper(context);
+    mongoClient = client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
 
-        coll = mongoClient.getDatabase("photoFoodDB").getCollection("photoFoodColl");
-
-
-    }
-
-    public void createUser(String email,String fname, String lname, int weight, int heightFeet, int heightInches, int age, boolean smoker){
-        u = new User(email, fname, lname, weight, heightFeet, heightInches, age, smoker);
-        Document filterDoc = new Document().append("owner_id", client.getAuth().getUser().getId());
-        Document updateDoc = new Document().append("$set",
-                new Document()
-                        .append("fname", fname)
-                        .append("lname", lname)
-                        .append("email", email)
-        );
+    coll = mongoClient.getDatabase("photoFoodDB").getCollection("photoFoodColl");
 
 
-        final Task <RemoteUpdateResult> insertTask = coll.updateOne(filterDoc, updateDoc);
-        insertTask.addOnCompleteListener(new OnCompleteListener <RemoteUpdateResult> () {
-            @Override
-            public void onComplete(@NonNull Task <RemoteUpdateResult> task) {
-                if (task.isSuccessful()) {
-                    Log.d("app", String.format("successfully inserted item with id %s",
-                            task.getResult().getUpsertedId()));
-                } else {
-                    Log.e("app", "failed to insert document with: ", task.getException());
-                }
-            }
-        });
-    }
+  }
+
+  public void createUser(String email,String fname, String lname, int weight, int heightFeet, int heightInches, int age, boolean smoker){
+    u = new User(email, fname, lname, weight, heightFeet, heightInches, age, smoker);
+    Document filterDoc = new Document().append("owner_id", client.getAuth().getUser().getId());
+    Document updateDoc = new Document().append("$set",
+            new Document()
+                    .append("fname", fname)
+                    .append("lname", lname)
+                    .append("email", email)
+    );
+
+
+    final Task <RemoteUpdateResult> insertTask = coll.updateOne(filterDoc, updateDoc);
+    insertTask.addOnCompleteListener(new OnCompleteListener <RemoteUpdateResult> () {
+      @Override
+      public void onComplete(@NonNull Task <RemoteUpdateResult> task) {
+        if (task.isSuccessful()) {
+          Log.d("app", String.format("successfully inserted item with id %s",
+                  task.getResult().getUpsertedId()));
+        } else {
+          Log.e("app", "failed to insert document with: ", task.getException());
+        }
+      }
+    });
+  }
 }

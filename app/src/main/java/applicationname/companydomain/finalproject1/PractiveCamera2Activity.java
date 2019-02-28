@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -23,7 +24,7 @@ public class PractiveCamera2Activity extends AppCompatActivity {
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
-
+    private static final int PICK_IMAGE = 100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,15 +51,15 @@ public class PractiveCamera2Activity extends AppCompatActivity {
                 int id = menuItem.getItemId();
                 Log.e("TAG", "onOptionsItemSelected: " + "WE IN THIS HOE????");
                 if (id == R.id.nav_upload) {
-                    // Handle the camera action
+                    Intent pictureScreen = new Intent(PractiveCamera2Activity.this, PictureActivity.class);
+                    pictureScreen.putExtra("upload", true);
+                    startActivity(pictureScreen);
                 } else if (id == R.id.nav_search) {
                     Intent searchScreen = new Intent(PractiveCamera2Activity.this, SearchFoodActivity.class);
                     startActivity(searchScreen);
                 } else if (id == R.id.nav_settings) {
-
-                } else if(id == R.id.mybutton){
-                    Intent searchScreen = new Intent(PractiveCamera2Activity.this, SearchFoodActivity.class);
-                    startActivity(searchScreen);
+                    Intent userInfoScreen = new Intent(PractiveCamera2Activity.this, UserFoodInfoActivity.class);
+                    startActivity(userInfoScreen);
                 }
 
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

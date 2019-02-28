@@ -2,14 +2,19 @@ package applicationname.companydomain.finalproject1;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -25,17 +30,21 @@ public class NutrientsActivity extends AppCompatActivity implements AdapterView.
     private Food f;
     private ArrayAdapter<String> adapter;
     private ListView nutrientsListView;
+    private TextView measureNum;
     private NutrientsController mNutrientsController;
     private List<String> nutrientsList;
     private Spinner spinnerMeasurements;
     private List<String> measurements;
     private List<String> measurementsURI;
     private String URI;
+    private String foodName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_nutrients);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         nutrientsList = new ArrayList<>();
         Bundle intentExtras = getIntent().getExtras();
         nutrientsListView = (ListView) findViewById(R.id.nutrientsList);
@@ -44,7 +53,10 @@ public class NutrientsActivity extends AppCompatActivity implements AdapterView.
         URI = (String) intentExtras.get("URI");
         measurements = intentExtras.getStringArrayList("measurements");
         measurementsURI = intentExtras.getStringArrayList("measurementsURI");
-        mNutrientsController = new NutrientsController(this, this, measurements, measurementsURI);
+        foodName = intentExtras.getString("name");
+        getSupportActionBar().setTitle(foodName);
+
+        mNutrientsController = new NutrientsController(this, this, measurements, measurementsURI, foodName);
         try {
             mNutrientsController.getNutrients(URI,0);
         } catch (JSONException e) {
@@ -59,6 +71,15 @@ public class NutrientsActivity extends AppCompatActivity implements AdapterView.
         }
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMeasurements.setAdapter(dataAdapter);
+        measureNum = (TextView) findViewById(R.id.measureNum);
+        measureNum.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    mNutrientsController.multiplyNutrients(Integer.parseInt(String.valueOf(measureNum.getText())));
+                }
+                return false;
+            }
+        });
     }
 
 
@@ -84,9 +105,8 @@ public class NutrientsActivity extends AppCompatActivity implements AdapterView.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.mybutton) {
-            mNutrientsController.addNutrients(f);
+            mNutrientsController.addNutrients();
             Toast.makeText(this.getBaseContext(),"You have successfully added this item.",Toast.LENGTH_SHORT).show();
             onBackPressed();
         }

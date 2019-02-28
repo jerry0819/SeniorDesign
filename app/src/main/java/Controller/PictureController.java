@@ -45,7 +45,7 @@ public class PictureController {
     public ArrayList<ArrayList<String>> measurementsMatrix;
     private Context mContext;
     private static final String TAG = "HttpURLGET";
-    private List<String> list = new ArrayList<>();
+    public List<String> list = new ArrayList<>();
     private List<String> foods =  new ArrayList<>();
     private List<String> data;
     private List<String> URIlist = new ArrayList<>();
@@ -190,7 +190,7 @@ public class PictureController {
                     URIlist.add(foodURI);
                     list.add(food);
                     Log.e(TAG, "FOOD NAME: " + foodName );
-                    pa.display(foods, pa);
+                    pa.display(list, pa);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {

@@ -24,6 +24,7 @@ public class SearchFoodActivity extends AppCompatActivity {
     private ListView foodListView;
     private EditText searchFoodEdit;
     private SearchFoodController mSearchFoodController;
+    private String foodName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +35,7 @@ public class SearchFoodActivity extends AppCompatActivity {
         foodListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                foodName = foodListView.getItemAtPosition(position).toString();
                 nextScreen(mSearchFoodController.getURI(position), mSearchFoodController.measurementsMatrix.get(position), mSearchFoodController.measurementsURIMatrix.get(position));
             }
         });
@@ -52,6 +54,7 @@ public class SearchFoodActivity extends AppCompatActivity {
         loadNutrientScreen.putExtra("URI", uri);
         loadNutrientScreen.putExtra("measurements", measurements);
         loadNutrientScreen.putExtra("measurementsURI", measurementsURI);
+        loadNutrientScreen.putExtra("name", foodName);
         startActivity(loadNutrientScreen);
     }
 

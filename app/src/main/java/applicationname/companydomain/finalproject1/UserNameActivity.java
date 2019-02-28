@@ -52,4 +52,3 @@ public class UserNameActivity extends AppCompatActivity {
     }
 
 }
-

@@ -49,12 +49,14 @@ public class NutrientsController {
     private List<String> measurements;
     private List<String> measurementsURI;
     private Food f;
-    public NutrientsController(Context context,NutrientsActivity sna, List<String> measurements, List<String> measurementsURI) {
+    private String foodName;
+    public NutrientsController(Context context, NutrientsActivity sna, List<String> measurements, List<String> measurementsURI, String foodName) {
         this.measurements = measurements;
         this.measurementsURI = measurementsURI;
         mContext = context;
         nuts = new ArrayList<>();
         mNutrientsActivity = sna;
+        this.foodName = foodName;
         mSharedPreferenceHelper = new SharedPreferenceHelper(context);
         client = null;
         try {
@@ -69,6 +71,7 @@ public class NutrientsController {
         catch(Exception e){
 
         }
+        f = new Food();
         mSharedPreferenceHelper = new SharedPreferenceHelper(context);
         mongoClient = client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
         coll = mongoClient.getDatabase("photoFoodDB").getCollection("photoFoodColl");
@@ -84,13 +87,12 @@ public class NutrientsController {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String jsonData = response.body().string();
-                f = new Food();
-                Calendar cal = Calendar. getInstance();
-                f.date = cal.getTime();
+                Calendar cal = Calendar.getInstance();
+                f.date = cal.getTime().toString();
                 JSONObject nutrients = null;
                 JSONObject j = null;
                 Log.e(TAG, "onNotResponse: " + jsonData);
-
+                    f.name = foodName;
                 //TODO change to if statements.
                 try {
                     JSONObject returnJSON = new JSONObject(jsonData);
@@ -294,7 +296,7 @@ public class NutrientsController {
         call.enqueue(callback);
     }
 
-    public void addNutrients(Food f)
+    public void addNutrients()
     {
         Document filterDoc = new Document().append("owner_id", mSharedPreferenceHelper.getCode());
         Document updateDoc = new Document().append("$push",
@@ -356,5 +358,12 @@ public class NutrientsController {
         });
     }
 
+    public void multiplyNutrients(int num){
+        f.calories *= num;
+        nuts.add("calories per: " + f.calories);
+        mNutrientsActivity.showNutrients(nuts, mNutrientsActivity, f);
+
+        return;
+    }
 }
 

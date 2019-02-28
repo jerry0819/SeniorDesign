@@ -5,24 +5,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient">
+    <LinearLayout android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
 
     <Spinner
         android:id="@+id/spinnerMeasurements"
         android:layout_width="fill_parent"
-        android:layout_height="46dp"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/nutrientsList"
-        app:layout_constraintBottom_toTopOf="@+id/nutrientsList"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="16dp"/>
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/measureNum"
         app:layout_constraintBottom_toTopOf="@+id/nutrientsList"
-        app:layout_constraintTop_toTopOf="@id/spinnerMeasurements" />
+        app:layout_constraintTop_toTopOf="@id/spinnerMeasurements"
+        android:inputType="number"
+        android:imeOptions="actionDone"/>
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/nutrientsList"
-        android:layout_below="@+id/spinnerMeasurements"
-        android:layout_marginTop="150dp">
+        android:layout_below="@+id/spinnerMeasurements">
     </ListView>
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>

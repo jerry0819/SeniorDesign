@@ -29,6 +29,7 @@ public class SearchFoodController {
     public ArrayList<ArrayList<String>> measurementsMatrix;
     public ArrayList<ArrayList<String>> measurementsURIMatrix;
     private ArrayList<String> measurementsURI;
+    public String foodName;
     public SearchFoodController(Context context){
         fl = new ArrayList<>();
         measurementsMatrix=new ArrayList<>();
@@ -54,7 +55,7 @@ public class SearchFoodController {
                         measurements = new ArrayList<>();
                         measurementsURI = new ArrayList<>();
                         JSONArray hints = (JSONArray) returnJSON.get("hints");
-                        String foodName = returnJSON.getString("text");
+                        foodName = returnJSON.getString("text");
                         JSONObject food1 = hints.getJSONObject(i);
                         JSONObject morefood = food1.getJSONObject("food");
                         String food = morefood.getString("label");

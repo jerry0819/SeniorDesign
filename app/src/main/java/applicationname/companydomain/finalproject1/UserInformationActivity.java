@@ -22,7 +22,6 @@ public class UserInformationActivity extends AppCompatActivity implements WheelP
     private String lname;
     private String email;
     String LOG = "log";
-    String TAG = "log";
     private WheelPicker wheelLeft;
     private WheelPicker wheelRight;
     private TextView heightf;

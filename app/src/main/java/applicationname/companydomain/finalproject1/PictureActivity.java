@@ -50,22 +50,31 @@ public class PictureActivity extends AppCompatActivity implements NavigationView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture);
-        nutrientsListView = findViewById(R.id.list_food);
+        Bundle intentExtras = getIntent().getExtras();
         imageView = findViewById(R.id.img);
+
+        nutrientsListView = findViewById(R.id.list_food);
+
         data = new ArrayList<>();
         feature = new Feature();
         feature.setType(visionAPI);
         feature.setMaxResults(5);
-        int nh = (int) ( PractiveCamera2Activity.bitmap.getHeight() * (1024.0 / PractiveCamera2Activity.bitmap.getWidth()) );
-        PractiveCamera2Activity.bitmap= Bitmap.createScaledBitmap(PractiveCamera2Activity.bitmap, 1024, nh, true);
-        imageView.setImageBitmap(PractiveCamera2Activity.bitmap);
-        mPictureController = new PictureController(this,  PractiveCamera2Activity.bitmap, feature, this);
+
+        if(intentExtras!=null){
+            openGallery();
+        }
+        else {
+            int nh = (int) ( PractiveCamera2Activity.bitmap.getHeight() * (1024.0 / PractiveCamera2Activity.bitmap.getWidth()) );
+            PractiveCamera2Activity.bitmap= Bitmap.createScaledBitmap(PractiveCamera2Activity.bitmap, 1024, nh, true);
+            imageView.setImageBitmap(PractiveCamera2Activity.bitmap);
+            mPictureController = new PictureController(this,  PractiveCamera2Activity.bitmap, feature, this);
+        }
         //TODO change code so if a brand is picked up, combine with top result to find brands food
         nutrientsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String URI = mPictureController.getURI(position);
-                nextScreen(URI, mPictureController.measurementsMatrix.get(position), mPictureController.measurementsURIMatrix.get(position));
+                nextScreen(URI, mPictureController.measurementsMatrix.get(position), mPictureController.measurementsURIMatrix.get(position), mPictureController.list.get(position));
             }
         });
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -94,7 +103,8 @@ public class PictureActivity extends AppCompatActivity implements NavigationView
                     Intent searchScreen = new Intent(PictureActivity.this, SearchFoodActivity.class);
                     startActivity(searchScreen);
                 } else if (id == R.id.nav_settings) {
-
+                    Intent searchScreen = new Intent(PictureActivity.this, UserFoodInfoActivity.class);
+                    startActivity(searchScreen);
                 } else if(id == R.id.mybutton){
                     Intent searchScreen = new Intent(PictureActivity.this, SearchFoodActivity.class);
                     startActivity(searchScreen);
@@ -122,11 +132,12 @@ public class PictureActivity extends AppCompatActivity implements NavigationView
         });
     }
 
-    public void nextScreen(String URI, ArrayList<String> measurements,  ArrayList<String> measurementsURI) {
+    public void nextScreen(String URI, ArrayList<String> measurements, ArrayList<String> measurementsURI, String name) {
         Intent loadNutrientScreen = new Intent(this, NutrientsActivity.class);
         loadNutrientScreen.putExtra("URI", URI);
         loadNutrientScreen.putExtra("measurements", measurements);
         loadNutrientScreen.putExtra("measurementsURI", measurementsURI);
+        loadNutrientScreen.putExtra("name", name);
         startActivity(loadNutrientScreen);
     }
 
@@ -176,7 +187,8 @@ public class PictureActivity extends AppCompatActivity implements NavigationView
             Intent searchScreen = new Intent(this, SearchFoodActivity.class);
             startActivity(searchScreen);
         } else if (id == R.id.nav_settings) {
-
+            Intent searchScreen = new Intent(this, UserFoodInfoActivity.class);
+            startActivity(searchScreen);
         } else if(id == R.id.mybutton){
             Intent searchScreen = new Intent(this, SearchFoodActivity.class);
             startActivity(searchScreen);
@@ -218,7 +230,7 @@ public class PictureActivity extends AppCompatActivity implements NavigationView
             Bitmap b = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
             int nh = (int) ( b.getHeight() * (1024.0 / b.getWidth()) );
             b = Bitmap.createScaledBitmap(b, 1024, nh, true);
-            mPictureController.callCloudVision(b, feature);
+            mPictureController = new PictureController(this, b , feature, this);
         }
     }
 

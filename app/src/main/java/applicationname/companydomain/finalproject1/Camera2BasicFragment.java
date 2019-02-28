@@ -921,6 +921,8 @@ public class Camera2BasicFragment extends Fragment
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+        Intent intent = new Intent(getActivity(), PictureActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -975,8 +977,6 @@ public class Camera2BasicFragment extends Fragment
             byte[] bytes = new byte[buffer.remaining()];
             buffer.get(bytes);
             PractiveCamera2Activity.bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            Intent intent = new Intent(getActivity(), PictureActivity.class);
-            startActivity(intent);
         }
 
     }
@@ -1157,6 +1157,4 @@ public class Camera2BasicFragment extends Fragment
         }
         return res;
     }
-
-
 }

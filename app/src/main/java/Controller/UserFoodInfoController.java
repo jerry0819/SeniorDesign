@@ -22,16 +22,21 @@ import static com.mongodb.client.model.Projections.include;
 
 import org.bson.BsonType;
 import org.bson.Document;
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.mongodb.client.model.Projections;
 import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import Models.Food;
 import applicationname.companydomain.finalproject1.UserFoodInfoActivity;
@@ -80,19 +85,63 @@ public class UserFoodInfoController {
                             JSONObject jo = new JSONObject(task.getResult().toJson());
                             JSONArray ja = jo.getJSONArray("nutrientsInfoList");
                             Gson gson = new Gson();
-                            Log.d("app", String.format("successfully found document: %s",
-                                    ja));
+                            Log.d("app", String.format("successfully found document: %s", ja));
                             List<Food> lf = gson.fromJson(ja.toString(), new TypeToken<List<Food>>(){}.getType());
-                            int total=0;
+                            int monTotal=0;
+                            int tuesTotal=0;
+                            int wedTotal=0;
+                            int thursTotal=0;
+                            int friTotal=0;
+                            int satTotal=0;
+                            int sunTotal=0;
+
+                            long prevDay = System.currentTimeMillis() - 1000*60*60*24*7;
+                            Date prev = new Date(prevDay);
+                            Log.e("TAG", "onComplete: " + lf.size());
                             for (Food f:lf) {
-                                total += f.calories;
+                                Date date = new SimpleDateFormat( "EEE MMM dd HH:mm:ss z yyyy").parse(f.date);
+                                if(date.before(prev)){
+                                } else {
+                                    if(date.toString().contains("Mon")){
+                                        System.out.println("The date is older than current day");
+                                        monTotal += f.calories;
+                                        Log.e("TAG", "onComplete: " + f.name);
+                                    } else if(date.toString().contains("Tue")){
+                                        System.out.println("The date is older than current day");
+                                        tuesTotal += f.calories;
+                                        Log.e("TAG", "onComplete: " + f.name);
+                                    }else if(date.toString().contains("Wed")){
+                                        System.out.println("The date is older than current day");
+                                        wedTotal += f.calories;
+                                        Log.e("TAG", "onComplete: " + f.name);
+                                    }else if(date.toString().contains("Thu")){
+                                        System.out.println("The date is older than current day");
+                                        thursTotal += f.calories;
+                                        Log.e("TAG", "onComplete: " + f.name);
+                                    }else if(date.toString().contains("Fri")){
+                                        System.out.println("The date is older than current day");
+                                        friTotal += f.calories;
+                                        Log.e("TAG", "onComplete: " + f.name);
+                                    }else if(date.toString().contains("Sat")){
+                                        System.out.println("The date is older than current day");
+                                        satTotal += f.calories;
+                                        Log.e("TAG", "onComplete: " + f.name);
+                                    }else if(date.toString().contains("Sun")){
+                                        System.out.println("The date is older than current day");
+                                        sunTotal += f.calories;
+                                        Log.e("TAG", "onComplete: " + f.name);
+                                    }
+                                }
+
                             }
-                            ufia.showCalories(total);
+                            ufia.showCalories(monTotal, tuesTotal, wedTotal, thursTotal, friTotal, satTotal, sunTotal);
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            Log.e("TAG", "onComplete: " + e.toString());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            Log.e("TAG", "onComplete: " + e.toString());
                         }
-
-
                     }
 
                 } else {

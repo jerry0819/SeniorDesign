@@ -8,7 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aigestudio.wheelpicker.WheelPicker;
 
@@ -16,12 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Controller.UserInformationController;
+import Models.User;
 
 public class UserInformationActivity extends AppCompatActivity implements WheelPicker.OnItemSelectedListener, View.OnClickListener {
     private String fname;
     private String lname;
     private String email;
     String LOG = "log";
+    private User u;
     private WheelPicker wheelLeft;
     private WheelPicker wheelRight;
     private TextView heightf;
@@ -33,6 +37,7 @@ public class UserInformationActivity extends AppCompatActivity implements WheelP
     private Button buttonDone;
     private String heightInches;
     private String heightFeet;
+    private RadioGroup radioGroup;
     private UserInformationController mUserInfoController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +47,6 @@ public class UserInformationActivity extends AppCompatActivity implements WheelP
         fname = (String) intentExtras.get("fname");
         lname = (String) intentExtras.get("lname");
         email = (String) intentExtras.get("email");
-
         Log.e(LOG, "onCreate: " + fname);
         wheelLeft = (WheelPicker) findViewById(R.id.main_wheel_left);
         List<Integer> dataLeft = new ArrayList<>();
@@ -58,6 +62,8 @@ public class UserInformationActivity extends AppCompatActivity implements WheelP
         wheelRight.setOnItemSelectedListener(this);
         heightf = (TextView) findViewById(R.id.text_hf);
         heighti = (TextView) findViewById(R.id.text_hi);
+        heightf.setText("1");
+        heighti.setText("1");
         mUserInfoController = new UserInformationController(this);
         buttonDone = (Button) findViewById(R.id.button_done);
         inputWeight = (EditText)findViewById(R.id.input_weight);
@@ -94,15 +100,49 @@ public class UserInformationActivity extends AppCompatActivity implements WheelP
                 buttonSelect.setVisibility(View.GONE);
                 heightf.setText(heightFeet);
                 heighti.setText(heightInches);
+                if(heightFeet==null){
+                    heightf.setText("1");
+                }
+                if(heightInches==null){
+                    heighti.setText("1");
+                }
             }
         });
+
         buttonDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mUserInfoController.createUser(email, fname, lname,Integer.parseInt(String.valueOf(inputWeight.getText())),Integer.parseInt(String.valueOf(heightf.getText())),Integer.parseInt(String.valueOf(heighti.getText())),Integer.parseInt(String.valueOf(inputAge.getText())),checkSmoker.isChecked());
-                nextScreen();
+                if(Integer.parseInt(String.valueOf(inputWeight.getText()))==0 || Integer.parseInt(String.valueOf(inputAge.getText()))==0){
+                    showError();
+                }
+                else {
+                    mUserInfoController.createUser(email, fname, lname, Integer.parseInt(String.valueOf(inputWeight.getText())), Integer.parseInt(String.valueOf(heightf.getText())), Integer.parseInt(String.valueOf(heighti.getText())), Integer.parseInt(String.valueOf(inputAge.getText())), checkSmoker.isChecked(), u.sex);
+                    nextScreen();
+                }
             }
         });
+
+        u = new User();
+        u.sex='m';
+        radioGroup = (RadioGroup)findViewById(R.id.radioGrp);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                View radioButton = radioGroup.findViewById(i);
+                int index = radioGroup.indexOfChild(radioButton);
+                if(index==1){
+                    u.sex = 'm';
+                }
+                else
+                {
+                    u.sex = 'f';
+                }
+            }
+        });
+    }
+
+    private void showError() {
+        Toast.makeText(this, "Please correct the errors above.", Toast.LENGTH_LONG).show();
     }
 
     @Override

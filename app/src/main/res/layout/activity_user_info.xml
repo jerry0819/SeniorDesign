@@ -6,12 +6,12 @@
     xmlns:aigestudio="http://schemas.android.com/apk/res-auto"
     tools:context=".LoginActivity"
     android:background="@drawable/background_gradient">
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="24dp">
+        android:paddingLeft="18dp"
+        android:paddingRight="18dp">
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -20,7 +20,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
                 android:paddingTop="76dp">
                 <TextView android:id="@+id/text_height"
@@ -65,7 +65,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:paddingTop="76dp">
+                    android:paddingLeft="2dp"
+                    android:paddingTop="84dp">
                     <TextView android:id="@+id/text_hf"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -79,7 +80,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:paddingTop="76dp">
+                    android:paddingLeft="6dp"
+                    android:paddingTop="84dp">
                     <TextView android:id="@+id/text_feet"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -114,7 +116,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:paddingTop="76dp">
+                    android:paddingLeft="4dp"
+                    android:paddingTop="84dp">
                     <TextView android:id="@+id/text_hi"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -128,7 +131,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:paddingTop="76dp">
+                    android:paddingLeft="4dp"
+                    android:paddingTop="84dp">
                     <TextView android:id="@+id/text_inches"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -139,13 +143,12 @@
                     android:id="@+id/selectHeight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="100dp"
                     android:layout_marginBottom="24dp"
-                    android:padding="76dp"
                     android:text="OK"
                     android:textSize="18dp"
                     android:visibility="gone"
-                    android:background="@android:color/transparent"/>
+                    android:background="@drawable/ovalbutton"/>
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
@@ -206,19 +209,43 @@
                     android:background="@android:color/transparent" />
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
+
             <CheckBox android:id="@+id/check_smoker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Do you currently smoke?"
+                android:text="Do you currently smoke?"
+                android:textColor="#000000"
                 android:textSize="25sp"
-                android:layout_marginTop="40dp"/>
-        </android.support.design.widget.TextInputLayout>
-
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="40dp"
+                android:background="@android:color/transparent" />
+        <RadioGroup
+            android:id="@+id/radioGrp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <RadioButton
+                android:id="@+id/radioM"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:checked="true"
+                android:layout_weight="1"
+                android:textSize="30dp"
+                android:text="Male"
+                />
+            <RadioButton
+                android:id="@+id/radioF"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:checked="false"
+                android:layout_weight="1"
+                android:textSize="30dp"
+                android:text="Female"
+                />
+        </RadioGroup>
         <!-- Signup Button -->
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/button_done"
@@ -226,9 +253,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
-            android:padding="12dp"
+            android:gravity="center"
             android:text="Done"
             android:textSize="18dp"
-            android:background="@android:color/transparent"/>
+            android:background="@drawable/ovalbutton"
+            android:paddingLeft="48dp"
+            android:paddingRight="48dp"/>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

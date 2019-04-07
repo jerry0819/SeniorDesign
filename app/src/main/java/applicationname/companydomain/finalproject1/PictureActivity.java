@@ -1,8 +1,12 @@
 package applicationname.companydomain.finalproject1;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,30 +18,31 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.api.services.vision.v1.model.Feature;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import Adapters.FoodAdapter;
 import Controller.PictureController;
+import Models.SimpleFood;
 
 public class PictureActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private ImageView imageView;
-    private TextView tv;
+    private TextView tvNoResult;
     List<String> data;
-    private ArrayAdapter<String> adapter;
+    private FoodAdapter adapter;
     private Feature feature;
     private String visionAPI = "WEB_DETECTION";
     private PictureController mPictureController;
@@ -45,6 +50,10 @@ public class PictureActivity extends AppCompatActivity implements NavigationView
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
+    private List<SimpleFood> foodList;
+    private ProgressBar pbFood;
+    private ImageView ivNoResult;
+
     private static final int PICK_IMAGE = 100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +61,14 @@ public class PictureActivity extends AppCompatActivity implements NavigationView
         setContentView(R.layout.activity_picture);
         Bundle intentExtras = getIntent().getExtras();
         imageView = findViewById(R.id.img);
-
+        pbFood = findViewById(R.id.pbFood);
+        ivNoResult = findViewById(R.id.ivNoResult);
+        ivNoResult.setVisibility(View.GONE);
+        tvNoResult = findViewById(R.id.tvNoResult);
+        tvNoResult.setVisibility(View.GONE);
         nutrientsListView = findViewById(R.id.list_food);
-
+        nutrientsListView.setVisibility(View.GONE);
+        foodList = new ArrayList<>();
         data = new ArrayList<>();
         feature = new Feature();
         feature.setType(visionAPI);
@@ -73,8 +87,7 @@ public class PictureActivity extends AppCompatActivity implements NavigationView
         nutrientsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String URI = mPictureController.getURI(position);
-                nextScreen(URI, mPictureController.measurementsMatrix.get(position), mPictureController.measurementsURIMatrix.get(position), mPictureController.list.get(position));
+                nextScreen(foodList.get(position).foodURI, foodList.get(position).measurements, foodList.get(position).measurementsURI,foodList.get(position).name);
             }
         });
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -96,7 +109,6 @@ public class PictureActivity extends AppCompatActivity implements NavigationView
                 //Toast.makeText(getApplicationContext(), menuItem.getTitle().toString(),
                 //       Toast.LENGTH_LONG).show();
                 int id = menuItem.getItemId();
-                Log.e("TAG", "onOptionsItemSelected: " + "WE IN THIS HOE????");
                 if (id == R.id.nav_upload) {
                     openGallery();
                 } else if (id == R.id.nav_search) {
@@ -118,16 +130,19 @@ public class PictureActivity extends AppCompatActivity implements NavigationView
     }
 
 
-    public void display(final List<String> s, final PictureActivity pa)
+    public void display(final List<SimpleFood> foodList, final PictureActivity pa)
     {
-        Log.e("IS IT WOKRING?", "display: " + s.size() );
+        this.foodList = foodList;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 // Stuff that updates the UI
-                adapter = new ArrayAdapter<String>(pa, android.R.layout.simple_expandable_list_item_1, s);
+                pbFood.setVisibility(View.GONE);
+                ivNoResult.setVisibility(View.GONE);
+                tvNoResult.setVisibility(View.GONE);
+                nutrientsListView.setVisibility(View.VISIBLE);
+                adapter = new FoodAdapter(pa, foodList);
                 nutrientsListView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
             }
         });
     }
@@ -144,7 +159,6 @@ public class PictureActivity extends AppCompatActivity implements NavigationView
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item){
         int id = item.getItemId();
-        Log.e("TAG", "onOptionsItemSelected: " + "WE IN THIS HOE????");
         if (id == R.id.nav_upload) {
 
         } else if (id == R.id.nav_search) {
@@ -232,6 +246,16 @@ public class PictureActivity extends AppCompatActivity implements NavigationView
             b = Bitmap.createScaledBitmap(b, 1024, nh, true);
             mPictureController = new PictureController(this, b , feature, this);
         }
+    }
+    public void noResults(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                pbFood.setVisibility(View.GONE);
+                ivNoResult.setVisibility(View.VISIBLE);
+                tvNoResult.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
 }

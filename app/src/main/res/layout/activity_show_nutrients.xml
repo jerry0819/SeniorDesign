@@ -1,34 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient">
-    <LinearLayout android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
 
-    <Spinner
-        android:id="@+id/spinnerMeasurements"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/nutrientsList"
-        android:layout_marginTop="16dp"/>
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/measureNum"
-        app:layout_constraintBottom_toTopOf="@+id/nutrientsList"
-        app:layout_constraintTop_toTopOf="@id/spinnerMeasurements"
-        android:inputType="number"
-        android:imeOptions="actionDone"/>
-    <ListView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/nutrientsList"
-        android:layout_below="@+id/spinnerMeasurements">
-    </ListView>
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/spinnerMeasurements"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/nutrientsList"
+                android:layout_marginTop="16dp"
+                android:layout_weight="0.75"/>
+
+            <EditText
+                android:id="@+id/measureNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:layout_marginTop="14dp"
+                android:text="1"
+                app:layout_constraintBottom_toTopOf="@+id/nutrientsList"
+                app:layout_constraintTop_toTopOf="@id/spinnerMeasurements"
+                android:layout_weight="0.25"/>
+
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/nutrientsList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/spinnerMeasurements">
+        </ListView>
+
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

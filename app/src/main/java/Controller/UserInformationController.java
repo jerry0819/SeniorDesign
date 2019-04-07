@@ -50,17 +50,21 @@ public class UserInformationController {
 
     coll = mongoClient.getDatabase("photoFoodDB").getCollection("photoFoodColl");
 
-
   }
 
-  public void createUser(String email,String fname, String lname, int weight, int heightFeet, int heightInches, int age, boolean smoker){
-    u = new User(email, fname, lname, weight, heightFeet, heightInches, age, smoker);
+  public void createUser(String email, String fname, String lname, int weight, int heightFeet, int heightInches, int age, boolean smoker, char sex){
+    u = new User(email, fname, lname, weight, heightFeet, heightInches, age, smoker, sex);
     Document filterDoc = new Document().append("owner_id", client.getAuth().getUser().getId());
     Document updateDoc = new Document().append("$set",
             new Document()
                     .append("fname", fname)
                     .append("lname", lname)
                     .append("email", email)
+                    .append("weight", weight)
+                    .append("height", heightInches + (heightFeet*12))
+                    .append("age", age)
+                    .append("smoker", smoker)
+                    .append("sex", sex)
     );
 
 

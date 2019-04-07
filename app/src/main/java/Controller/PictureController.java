@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import Models.SimpleFood;
 import applicationname.companydomain.finalproject1.PictureActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -47,6 +48,7 @@ public class PictureController {
     private static final String TAG = "HttpURLGET";
     public List<String> list = new ArrayList<>();
     private List<String> foods =  new ArrayList<>();
+    private List<SimpleFood> foodList = new ArrayList<>();
     private List<String> data;
     private List<String> URIlist = new ArrayList<>();
     public ArrayList<ArrayList<String>> measurementsURIMatrix;
@@ -135,21 +137,22 @@ public class PictureController {
         List<com.google.api.services.vision.v1.model.WebEntity> wbl = wb.getWebEntities();
         if(wbl!=null) {
             for (int i = 0; i < wbl.size(); i++) {
-                if (wbl.get(i).getScore() >= .5) {
+                Log.e(TAG, "convertResponseToString: " + wbl.get(i).getDescription() + wbl.get(i).getScore());
+                if (wbl.get(i).getScore()!= null && wbl.get(i).getScore() >= .5) {
                     data.add(wbl.get(i).getDescription());
-                    Log.e("YOOOOOOOOOOOOOO", "convertResponseToString: " + wbl.get(i).getDescription() + " " + wbl.get(i).getScore());
                 }
             }
-
+        if(data.size()==0){
+                pa.noResults();
+                return message;
+        }
             listFoods(data);
-            //new MyAsyncTask().execute();
-            //message = formatAnnotation(entityAnnotations);
         }
         return message;
     }
 
 
-    public List<String> listFoods(List<String> s){
+    public void listFoods(List<String> s){
         findRecipes(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -165,20 +168,51 @@ public class PictureController {
                     String jsonData = response.body().string();
                     JSONObject returnJSON = new JSONObject(jsonData);
                     JSONArray hints = (JSONArray) returnJSON.get("hints");
-                    String foodName = returnJSON.getString("text");
+                    String currFood = returnJSON.getString("text");
                     JSONObject food1 = hints.getJSONObject(0);
                     JSONObject morefood = food1.getJSONObject("food");
                     String food = morefood.getString("label");
-                    String foodURI = morefood.getString("uri");
-                    foods.add(returnJSON.getString("text"));
+                    String foodURI = morefood.getString("foodId");
+                    JSONObject nutrients = morefood.getJSONObject("nutrients");
+                    int calories = nutrients.getInt("ENERC_KCAL");
                     JSONArray measures = food1.getJSONArray("measures");
                     for (int i = 0; i < measures.length(); i++) {
                         JSONObject jsonMeasures = measures.getJSONObject(i);
                         measurements.add(jsonMeasures.getString("label"));
                         measurementsURI.add(jsonMeasures.getString("uri"));
                     }
-                    measurementsMatrix.add(measurements);
-                    measurementsURIMatrix.add(measurementsURI);
+                    SimpleFood sf = new SimpleFood(food, foodURI, calories, measurements, measurementsURI);
+                    foodList.add(sf);
+
+
+                    int cntr = 0;
+                    for(int i = 1; i<hints.length(); i++){
+
+                        food1 = hints.getJSONObject(i);
+                        morefood = food1.getJSONObject("food");
+                        Log.e(TAG, "onResponse: "+ currFood + "     " +  morefood.getString("label"));
+                        if(morefood.getString("label").toLowerCase().contains(currFood.toLowerCase())){
+                            food = morefood.getString("label");
+                            foodURI = morefood.getString("foodId");
+                            nutrients = morefood.getJSONObject("nutrients");
+                            calories = nutrients.getInt("ENERC_KCAL");
+                            measures = food1.getJSONArray("measures");
+                            measurements = new ArrayList<>();
+                            measurementsURI = new ArrayList<>();
+                            for (int y = 0; y < measures.length(); y++) {
+                                JSONObject jsonMeasures = measures.getJSONObject(y);
+                                measurements.add(jsonMeasures.getString("label"));
+                                measurementsURI.add(jsonMeasures.getString("uri"));
+                            }
+                            sf = new SimpleFood(food, foodURI, calories, measurements, measurementsURI);
+                            foodList.add(sf);
+                            cntr++;
+                            if(cntr==3){
+                                break;
+                            }
+                        }
+
+                    }
                     //TODO: get brand names working, currently breaks out of try catch if no brand
                     //if(morefood.getString("brand")!=null)
                     //{
@@ -187,24 +221,25 @@ public class PictureController {
                          //   Log.e(TAG, "FOUND ONE MY DUDE" + foodName );
                         //}
                     //}
-                    URIlist.add(foodURI);
-                    list.add(food);
-                    Log.e(TAG, "FOOD NAME: " + foodName );
-                    pa.display(list, pa);
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Log.e(TAG, "onResponse: " + e.toString() );
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Log.e(TAG, "onResponse: " + e.toString() );
                 }
+                if(foodList.size()==0){
+                    pa.noResults();
+                    return;
+                }
+                pa.display(foodList, pa);
             }
         }, s);
-        //pa.display(list, pa);
-        return list;
     }
 
 
     public void findRecipes(Callback callback, List<String> s) {
-
+        foods = s;
         String APP_KEY = "54d1e8339e20e21b6a8e69cd0ecded66";
         String APP_ID = "20f18e21";
         for (String food:s) {
@@ -231,5 +266,7 @@ public class PictureController {
     public String getURI(int position){
         return URIlist.get(position);
     }
+
+
 }
 

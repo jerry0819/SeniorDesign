@@ -49,26 +49,25 @@ public class NutrientsController {
     private List<String> measurements;
     private List<String> measurementsURI;
     private Food f;
+    private Food currFood;
     private String foodName;
+
     public NutrientsController(Context context, NutrientsActivity sna, List<String> measurements, List<String> measurementsURI, String foodName) {
         this.measurements = measurements;
         this.measurementsURI = measurementsURI;
         mContext = context;
-        nuts = new ArrayList<>();
         mNutrientsActivity = sna;
         this.foodName = foodName;
         mSharedPreferenceHelper = new SharedPreferenceHelper(context);
         client = null;
         try {
             client = Stitch.initializeDefaultAppClient("clustertest-sfown");
-        }
-        catch(Exception e){
+        } catch (Exception e) {
 
         }
         try {
             client = Stitch.getDefaultAppClient();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
 
         }
         f = new Food();
@@ -78,7 +77,8 @@ public class NutrientsController {
     }
 
     public void getNutrients(String URI, int position) throws JSONException {
-        findNutrients(URI,position, new Callback() {
+        nuts = new ArrayList<>();
+        findNutrients(URI, position, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
@@ -92,168 +92,168 @@ public class NutrientsController {
                 JSONObject nutrients = null;
                 JSONObject j = null;
                 Log.e(TAG, "onNotResponse: " + jsonData);
-                    f.name = foodName;
+                f.name = foodName;
                 //TODO change to if statements.
                 try {
                     JSONObject returnJSON = new JSONObject(jsonData);
                     nutrients = returnJSON.getJSONObject("totalNutrients");
                     j = nutrients.getJSONObject("ENERC_KCAL");
                     f.calories = j.getDouble("quantity");
-                }catch(Exception e) {
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("FAT");
-                    f.fat= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.fat = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("FASAT");
                     f.saturated_fat = j.getDouble("quantity");
-                }catch(Exception e) {
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("FATRN");
                     f.trans_fat = j.getDouble("quantity");
-                }catch(Exception e) {
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("FAMS");
-                    f.monounsaturated_fat= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.monounsaturated_fat = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("FAPU");
-                    f.polyunsaturated_fat= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.polyunsaturated_fat = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("CHOCDF");
-                    f.carbs= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.carbs = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("FIBTG");
-                    f.fiber= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.fiber = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("SUGAR");
                     f.sugars = j.getDouble("quantity");
-                }catch(Exception e) {
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("SUGAR.added");
-                    f.added_sugars= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.added_sugars = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("PROCNT");
-                    f.protein= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.protein = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("CHOLE");
-                    f.cholesterol= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.cholesterol = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("NA");
-                    f.sodium= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.sodium = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("CA");
-                    f.calcium= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.calcium = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("MG");
-                    f.magnesium= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.magnesium = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("K");
-                    f.potassium= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.potassium = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("FE");
-                    f.iron= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.iron = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("ZN");
-                    f.zinc= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.zinc = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("P");
-                    f.phosphorus= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.phosphorus = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("VITA_RAE");
-                    f.vitamin_A= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.vitamin_A = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("VITC");
-                    f.vitamin_C= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.vitamin_C = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("THIA");
-                    f.thiamin= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.thiamin = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("RIBF");
-                    f.riboflavin= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.riboflavin = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("NIA");
-                    f.niacin= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.niacin = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("VITB6A");
-                    f.vitamin_B6= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.vitamin_B6 = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("FOLDFE");
-                    f.folate_equivalent= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.folate_equivalent = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("FOLFD");
-                    f.folate= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.folate = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("FOLAC");
-                    f.folic_acid= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.folic_acid = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("VITB12");
-                    f.vitamin_B12= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.vitamin_B12 = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("VITD");
-                    f.vitamin_D= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.vitamin_D = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("TOCPHA");
-                    f.vitamin_E= j.getDouble("quantity");
-                }catch(Exception e) {
+                    f.vitamin_E = j.getDouble("quantity");
+                } catch (Exception e) {
                 }
                 try {
                     j = nutrients.getJSONObject("VITK1");
-                    f.vitamin_K= j.getDouble("quantity");
+                    f.vitamin_K = j.getDouble("quantity");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -262,31 +262,31 @@ public class NutrientsController {
                 nuts.add("carbs per: " + f.carbs);
                 nuts.add("sugars per: " + f.sugars);
                 mNutrientsActivity.showNutrients(nuts, mNutrientsActivity, f);
-                Log.e(TAG, "onResponse: " + f.calories );
+                Log.e(TAG, "onResponse: " + f.calories);
             }
         });
     }
 
 
-    public void findNutrients(String foodURI,int position, Callback callback) throws JSONException {
+    public void findNutrients(String foodURI, int position, Callback callback) throws JSONException {
         OkHttpClient client = new OkHttpClient.Builder()
                 .build();
         JSONObject obj = new JSONObject()
                 .put("quantity", 1)
-                .put("measureURI",measurementsURI.get(position))
-                .put("foodURI", foodURI);
+                .put("measureURI", measurementsURI.get(position))
+                .put("foodId", foodURI);
         JSONArray ja = new JSONArray()
                 .put(obj);
         String json = new JSONObject()
                 .put("ingredients", ja).toString();
-        Log.e(TAG, "findNutrients: " + json );
+        Log.e(TAG, "findNutrients: " + json);
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody body = RequestBody.create(JSON, json);
         HttpUrl.Builder urlBuilder = HttpUrl.parse("https://api.edamam.com/api/food-database/nutrients").newBuilder();
-        urlBuilder.addQueryParameter("app_id","7162d658");
-        urlBuilder.addQueryParameter("app_key","283c09f15ef61bca03b9d9d1c444f0b0");
+        urlBuilder.addQueryParameter("app_id", "7162d658");
+        urlBuilder.addQueryParameter("app_key", "283c09f15ef61bca03b9d9d1c444f0b0");
         String url = urlBuilder.build().toString();
-        Log.e(TAG,url);
+        Log.e(TAG, url);
 
         Request request = new Request.Builder()
                 .url(url)
@@ -296,8 +296,7 @@ public class NutrientsController {
         call.enqueue(callback);
     }
 
-    public void addNutrients()
-    {
+    public void addNutrients() {
         Document filterDoc = new Document().append("owner_id", mSharedPreferenceHelper.getCode());
         Document updateDoc = new Document().append("$push",
                 new Document().append("nutrientsInfoList", new Document()
@@ -341,11 +340,11 @@ public class NutrientsController {
         );
 
 
-        final Task <RemoteUpdateResult> updateTask =
+        final Task<RemoteUpdateResult> updateTask =
                 coll.updateOne(filterDoc, updateDoc);
-        updateTask.addOnCompleteListener(new OnCompleteListener <RemoteUpdateResult> () {
+        updateTask.addOnCompleteListener(new OnCompleteListener<RemoteUpdateResult>() {
             @Override
-            public void onComplete(@NonNull Task <RemoteUpdateResult> task) {
+            public void onComplete(@NonNull Task<RemoteUpdateResult> task) {
                 if (task.isSuccessful()) {
                     long numMatched = task.getResult().getMatchedCount();
                     long numModified = task.getResult().getModifiedCount();
@@ -358,11 +357,45 @@ public class NutrientsController {
         });
     }
 
-    public void multiplyNutrients(int num){
-        f.calories *= num;
-        nuts.add("calories per: " + f.calories);
-        mNutrientsActivity.showNutrients(nuts, mNutrientsActivity, f);
-
+    public void multiplyNutrients(int num) {
+        currFood = new Food();
+        currFood.calories = f.calories* num;
+        currFood.added_sugars = f.added_sugars * num;
+        currFood.calcium = f.calcium * num;
+        currFood.carbs = f.carbs * num;
+        currFood.cholesterol = f.cholesterol * num;
+        currFood.fat = f.fat * num;
+        currFood.fiber = f.fiber * num;
+        currFood.folate = f.folate * num;
+        currFood.folate_equivalent = f.folate_equivalent * num;
+        currFood.folic_acid = f.folic_acid * num;
+        currFood.iron = f.iron * num;
+        currFood.magnesium = f.magnesium * num;
+        currFood.monounsaturated_fat = f.monounsaturated_fat * num;
+        currFood.niacin = f.niacin * num;
+        currFood.phosphorus = f.phosphorus * num;
+        currFood.polyunsaturated_fat = f.polyunsaturated_fat * num;
+        currFood.potassium = f.potassium * num;
+        currFood.protein = f.protein * num;
+        currFood.riboflavin = f.riboflavin * num;
+        currFood.saturated_fat = f.saturated_fat * num;
+        currFood.sodium = f.sodium * num;
+        currFood.sugars = f.sugars * num;
+        currFood.thiamin = f.thiamin * num;
+        currFood.trans_fat = f.trans_fat * num;
+        currFood.vitamin_A = f.vitamin_A * num;
+        currFood.vitamin_B6 = f.vitamin_B6 * num;
+        currFood.vitamin_C = f.vitamin_C * num;
+        currFood.vitamin_B12 = f.vitamin_B12 * num;
+        currFood.vitamin_D = f.vitamin_D * num;
+        currFood.vitamin_E = f.vitamin_E * num;
+        currFood.vitamin_K = f.vitamin_K * num;
+        currFood.zinc = f.zinc * num;
+        nuts = new ArrayList<>();
+        nuts.add("calories per: " + currFood.calories);
+        nuts.add("carbs per: " + currFood.carbs);
+        nuts.add("sugars per: " + currFood.sugars);
+        mNutrientsActivity.showNutrients(nuts, mNutrientsActivity, currFood);
         return;
     }
 }

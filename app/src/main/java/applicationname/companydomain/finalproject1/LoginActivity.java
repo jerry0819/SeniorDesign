@@ -1,6 +1,7 @@
 package applicationname.companydomain.finalproject1;
 
 import android.content.Intent;
+import android.graphics.Path;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
@@ -30,10 +31,15 @@ public class LoginActivity extends AppCompatActivity{
     private int RC_SIGN_IN = 100;
     private SharedPreferenceHelper mSharedPreferenceHelper;
     private  StitchAppClient client;
+    private TextView tvTitle;
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        getSupportActionBar().hide();
+
+        tvTitle = findViewById(R.id.title);
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestServerAuthCode("617401619813-vkou7fta5rirtfol1uul4gg1v8ri6kmc.apps.googleusercontent.com")
                 .build();
@@ -110,6 +116,5 @@ public class LoginActivity extends AppCompatActivity{
             Log.w("ERROR", "signInResult:failed code=" + e.getStatusCode());
         }
     }
-
 
 }

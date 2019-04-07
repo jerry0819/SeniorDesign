@@ -27,18 +27,21 @@
             </intent-filter>
         </activity>
         <activity android:name=".PictureActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+            android:theme="@style/AppTheme.NoTitleActionBar">
         </activity>
         <activity android:name=".NutrientsActivity">
         </activity>
         <activity android:name=".PractiveCamera2Activity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+            android:theme="@style/AppTheme.NoTitleActionBar">
         </activity>
-        <activity android:name=".UserInformationActivity">
+        <activity android:name=".UserInformationActivity"
+            android:theme="@style/AppTheme.NoTitleActionBar">
         </activity>
-        <activity android:name=".UserNameActivity">
+        <activity android:name=".UserNameActivity"
+            android:theme="@style/AppTheme.NoTitleActionBar" >
         </activity>
-        <activity android:name=".SearchFoodActivity">
+        <activity android:name=".SearchFoodActivity"
+            android:theme="@style/AppTheme.NoTitleActionBar">
         </activity>
         <activity android:name=".UserFoodInfoActivity">
         </activity>

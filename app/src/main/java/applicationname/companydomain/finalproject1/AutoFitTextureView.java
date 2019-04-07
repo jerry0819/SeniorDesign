@@ -3,12 +3,16 @@ package applicationname.companydomain.finalproject1;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.TextureView;
 
 class AutoFitTextureView extends TextureView {
 
     private int mRatioWidth = 0;
     private int mRatioHeight = 0;
+
+    private GestureDetector mGestureDetector = null;
 
     public AutoFitTextureView(Context context) {
         this(context, null);
@@ -46,6 +50,26 @@ class AutoFitTextureView extends TextureView {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(width, height);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent m) {
+        if (mGestureDetector != null) {
+            mGestureDetector.onTouchEvent(m);
+        }
+        return true;
+    }
+
+    public void setGestureListener(GestureDetector.OnGestureListener gestureListener) {
+        if (gestureListener != null) {
+            mGestureDetector = new GestureDetector(getContext(), gestureListener);
+        } else {
+            mGestureDetector = null;
+        }
+    }
+
+    public boolean hasGestureDetector() {
+        return mGestureDetector != null;
     }
 
 }

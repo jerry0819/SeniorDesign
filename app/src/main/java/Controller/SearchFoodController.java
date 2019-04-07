@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import Models.SimpleFood;
 import applicationname.companydomain.finalproject1.SearchFoodActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -38,7 +39,9 @@ public class SearchFoodController {
         sfa = (SearchFoodActivity) context;
     }
 
-    public List<String> searchFoods(String s){
+    public void searchFoods(String s){
+
+        List<SimpleFood> foodList = new ArrayList<>();
         findFoods(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -47,49 +50,39 @@ public class SearchFoodController {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-
                 try {
                     String jsonData = response.body().string();
                     JSONObject returnJSON = new JSONObject(jsonData);
-                    for(int i =0; i<10; i++) {
+                    JSONArray hints = (JSONArray) returnJSON.get("hints");
+                    for(int x=0; x<hints.length(); x++) {
                         measurements = new ArrayList<>();
                         measurementsURI = new ArrayList<>();
-                        JSONArray hints = (JSONArray) returnJSON.get("hints");
-                        foodName = returnJSON.getString("text");
-                        JSONObject food1 = hints.getJSONObject(i);
+                        JSONObject food1 = hints.getJSONObject(x);
                         JSONObject morefood = food1.getJSONObject("food");
                         String food = morefood.getString("label");
-                        String foodURI = morefood.getString("uri");
-                        foods.add(returnJSON.getString("text"));
+                        String foodURI = morefood.getString("foodId");
+                        JSONObject nutrients = morefood.getJSONObject("nutrients");
+                        int calories = nutrients.getInt("ENERC_KCAL");
                         JSONArray measures = food1.getJSONArray("measures");
-                        for (int x = 0; x < measures.length(); x++) {
-                            JSONObject jsonMeasures = measures.getJSONObject(x);
+                        for (int i = 0; i < measures.length(); i++) {
+                            JSONObject jsonMeasures = measures.getJSONObject(i);
                             measurements.add(jsonMeasures.getString("label"));
                             measurementsURI.add(jsonMeasures.getString("uri"));
                         }
-                        measurementsMatrix.add(measurements);
-                        measurementsURIMatrix.add(measurementsURI);
-                        //TODO: get brand names working, currently breaks out of try catch if no brand
-                        //if(morefood.getString("brand")!=null)
-                        //{
-                        //if(foodName.toLowerCase().equals(morefood.getString("brand").toLowerCase()))
-                        //{
-                        //   Log.e(TAG, "FOUND ONE MY DUDE" + foodName );
-                        //}
-                        //}
-                        uriList.add(foodURI);
-                        list.add(food);
+                        SimpleFood sf = new SimpleFood(food, foodURI, calories, measurements, measurementsURI);
+                        foodList.add(sf);
                     }
-                    sfa.display(list, sfa);
+                    sfa.display(foodList, sfa);
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Log.e("TAG", "onResponse: " + e.getMessage() );
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Log.e("TAG", "onResponse: " + e.getMessage() );
                 }
             }
 
         }, s);
-        return null;
     }
 
 

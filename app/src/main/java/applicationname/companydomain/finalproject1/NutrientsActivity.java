@@ -57,11 +57,7 @@ public class NutrientsActivity extends AppCompatActivity implements AdapterView.
         getSupportActionBar().setTitle(foodName);
 
         mNutrientsController = new NutrientsController(this, this, measurements, measurementsURI, foodName);
-        try {
-            mNutrientsController.getNutrients(URI,0);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
         spinnerMeasurements = findViewById(R.id.spinnerMeasurements);
         spinnerMeasurements.setOnItemSelectedListener(this);
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, measurements);
@@ -87,9 +83,8 @@ public class NutrientsActivity extends AppCompatActivity implements AdapterView.
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                // Stuff that updates the UI
-                adapter = new ArrayAdapter<String>(sna, android.R.layout.simple_expandable_list_item_1, s);
-                nutrientsListView.setAdapter(adapter);
+                adapter.clear();
+                adapter.addAll(s);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -116,9 +111,7 @@ public class NutrientsActivity extends AppCompatActivity implements AdapterView.
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         try {
-
             mNutrientsController.getNutrients(URI,position);
-            adapter.clear();
         } catch (JSONException e) {
             e.printStackTrace();
         }

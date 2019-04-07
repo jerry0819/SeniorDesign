@@ -17,7 +17,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import Adapters.FoodAdapter;
 import Controller.SearchFoodController;
+import Models.SimpleFood;
 
 public class SearchFoodActivity extends AppCompatActivity {
     String TAG = "hey";
@@ -25,20 +27,27 @@ public class SearchFoodActivity extends AppCompatActivity {
     private EditText searchFoodEdit;
     private SearchFoodController mSearchFoodController;
     private String foodName;
+    private FoodAdapter adapter;
+    private  SimpleFood sf;
+    private List<SimpleFood> foodList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        foodList = new ArrayList<>();
+        //sf = new SimpleFood("","",0, null, null);
+        //foodList.add(sf);
         mSearchFoodController = new SearchFoodController(this);
         searchFoodEdit = (EditText) findViewById(R.id.input_search);
         foodListView = (ListView) findViewById(R.id.foodList);
         foodListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                foodName = foodListView.getItemAtPosition(position).toString();
-                nextScreen(mSearchFoodController.getURI(position), mSearchFoodController.measurementsMatrix.get(position), mSearchFoodController.measurementsURIMatrix.get(position));
+                nextScreen(foodList.get(position).foodURI, foodList.get(position).measurements, foodList.get(position).measurementsURI,foodList.get(position).name);
             }
         });
+        adapter = new FoodAdapter(this, foodList);
+        foodListView.setAdapter(adapter);
         searchFoodEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
@@ -49,25 +58,24 @@ public class SearchFoodActivity extends AppCompatActivity {
         });
     }
 
-    private void nextScreen(String uri, ArrayList<String> measurements, ArrayList<String> measurementsURI) {
+    private void nextScreen(String uri, ArrayList<String> measurements, ArrayList<String> measurementsURI, String name) {
         Intent loadNutrientScreen = new Intent(this, NutrientsActivity.class);
         loadNutrientScreen.putExtra("URI", uri);
         loadNutrientScreen.putExtra("measurements", measurements);
         loadNutrientScreen.putExtra("measurementsURI", measurementsURI);
-        loadNutrientScreen.putExtra("name", foodName);
+        loadNutrientScreen.putExtra("name", name);
         startActivity(loadNutrientScreen);
     }
 
 
-    public void display(final List<String> s, final SearchFoodActivity sfa)
+    public void display(final List<SimpleFood> foodList, final SearchFoodActivity sfa)
     {
-        Log.e("IS IT WOKRING?", "display: " + s.size() );
+        this.foodList = foodList;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                // Stuff that updates the UI
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(sfa, android.R.layout.simple_expandable_list_item_1, s);
-                foodListView.setAdapter(adapter);
+                adapter.getData().clear();
+                adapter.getData().addAll(foodList);
                 adapter.notifyDataSetChanged();
             }
         });
